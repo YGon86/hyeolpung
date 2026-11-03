@@ -20,8 +20,8 @@ main{max-width:1100px;margin:-44px auto 40px;padding:0 14px}
 section{background:var(--card);border-radius:16px;padding:18px;margin-top:16px;box-shadow:0 4px 14px rgba(20,30,60,.07)}
 h2{font-size:17px;margin:0 0 4px}.hint{font-size:12.5px;color:var(--sub);margin:0 0 14px}
 .tabs{display:flex;gap:6px;margin:16px 0 0;overflow-x:auto}.tab{border:0;background:#e3e7ef;padding:9px 15px;border-radius:999px;font-size:14px;font-weight:700;color:#41495b;cursor:pointer;white-space:nowrap}.tab.on{background:var(--red);color:#fff}
-.bars{display:flex;align-items:flex-end;gap:8px;height:170px;padding-top:10px}
-.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.bars{display:flex;align-items:flex-end;gap:4px;height:170px;padding-top:10px;overflow:hidden}
+.bar{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
 .bar i{display:block;width:100%;max-width:46px;background:linear-gradient(#e2384f,#8b0a1f);border-radius:8px 8px 3px 3px}
 .bar b{font-size:10px;white-space:nowrap;letter-spacing:-.5px;color:var(--sub);margin-bottom:4px;font-weight:600}.bar span{font-size:12px;margin-top:6px;color:var(--sub)}
 table{width:100%;border-collapse:collapse;font-size:14px}th{font-size:12px;color:var(--sub);font-weight:600;text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
@@ -52,7 +52,7 @@ footer{text-align:center;font-size:12px;color:var(--sub);padding:10px 0 30px}
     <button class="tab" data-t="rule">📜 회칙</button>
   </div>
   <div id="pay">
-    <section><h2>연도별 회비 입금</h2><p class="hint">매년 통장에 들어온 회비 합계예요.</p><div class="bars" id="bars"></div></section>
+    <section><h2>연도별 회비 입금</h2><p class="hint">매년 통장에 들어온 회비 합계예요. (단위: 만원)</p><div class="bars" id="bars"></div></section>
     <section><h2>최근 12개월 납부 현황</h2><p class="hint">빨간 칸 = 납부 완료 · 노란 칸 = 미납 · 회색 = 아직 마감 전</p><div class="tw"><div class="heat" id="heat"></div></div></section>
     <section><h2>회원별 현황</h2><p class="hint">누계 = 지금까지 낸 회비 / 사용 = 모임·환급으로 쓴 몫</p><div class="tw"><table id="mt"></table></div></section>
   </div>
@@ -227,7 +227,7 @@ function render(d, source) {
   // 연도별
   const byY = {}; d.months.forEach((mm, i) => { byY[mm.y] = (byY[mm.y] || 0) + (d.totals.monthly[i] || 0); });
   const ys = Object.keys(byY).filter(y => byY[y] > 0), mx = Math.max(...ys.map(y => byY[y]));
-  $('bars').innerHTML = ys.map(y => `<div class="bar"><b>${man(byY[y])}</b><i style="height:${byY[y] / mx * 120}px"></i><span>'${String(y).slice(2)}</span></div>`).join('');
+  $('bars').innerHTML = ys.map(y => `<div class="bar"><b>${Math.round(byY[y] / 10000)}</b><i style="height:${byY[y] / mx * 120}px"></i><span>'${String(y).slice(2)}</span></div>`).join('');
 
   // 히트맵
   const cut = now.getFullYear() * 12 + now.getMonth();
